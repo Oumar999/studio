@@ -63,7 +63,9 @@ export function Header() {
             ))}
           </nav>
           <div className="hidden md:flex items-center gap-2">
-            <Button variant="ghost">Business Login</Button>
+            <Link href="/login" passHref>
+              <Button variant="ghost">Business Login</Button>
+            </Link>
             <Link href="#download">
               <Button className="font-headline bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg hover:scale-105 transition-transform duration-300">Download App</Button>
             </Link>
@@ -93,7 +95,9 @@ export function Header() {
                     ))}
                   </nav>
                   <div className="mt-8 flex flex-col gap-4">
-                    <Button variant="ghost" size="lg">Business Login</Button>
+                    <Link href="/login" passHref>
+                      <Button variant="ghost" size="lg">Business Login</Button>
+                    </Link>
                     <Link href="#download">
                       <Button size="lg" className="font-headline bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg w-full">Download App</Button>
                     </Link>
