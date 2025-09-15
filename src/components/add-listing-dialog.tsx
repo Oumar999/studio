@@ -1,6 +1,7 @@
 // src/components/add-listing-dialog.tsx
 'use client';
 
+import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -24,8 +25,6 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import type { Listing } from '@/types/listing';
-import { Textarea } from './ui/textarea';
-import { useToast } from '@/hooks/use-toast';
 
 const listingSchema = z.object({
   name: z.string().min(1, 'Listing name is required'),
@@ -39,15 +38,16 @@ type ListingFormValues = z.infer<typeof listingSchema>;
 interface AddListingDialogProps {
   isOpen: boolean;
   onOpenChange: (isOpen: boolean) => void;
-  onAddListing: (listing: Omit<Listing, 'id' | 'status'>) => void;
+  onFormSubmit: (listing: Omit<Listing, 'id' | 'status'> | Omit<Listing, 'status'>) => void;
+  initialData?: Listing;
 }
 
 export function AddListingDialog({
   isOpen,
   onOpenChange,
-  onAddListing,
+  onFormSubmit,
+  initialData,
 }: AddListingDialogProps) {
-  const { toast } = useToast();
   const form = useForm<ListingFormValues>({
     resolver: zodResolver(listingSchema),
     defaultValues: {
@@ -57,13 +57,23 @@ export function AddListingDialog({
       pickupTime: '',
     },
   });
+  
+  useEffect(() => {
+    if (initialData) {
+      form.reset(initialData);
+    } else {
+      form.reset({
+          name: '',
+          price: 0,
+          quantity: 1,
+          pickupTime: '',
+      });
+    }
+  }, [initialData, form]);
 
   const onSubmit = (values: ListingFormValues) => {
-    onAddListing(values);
-    toast({
-      title: 'Listing Added',
-      description: `"${values.name}" has been successfully added.`,
-    });
+    const submissionData = initialData ? { ...values, id: initialData.id } : values;
+    onFormSubmit(submissionData);
     form.reset();
     onOpenChange(false);
   };
@@ -75,13 +85,15 @@ export function AddListingDialog({
     onOpenChange(open);
   }
 
+  const isEditing = !!initialData;
+
   return (
     <Dialog open={isOpen} onOpenChange={handleOpenChange}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Add New Listing</DialogTitle>
+          <DialogTitle>{isEditing ? 'Edit Listing' : 'Add New Listing'}</DialogTitle>
           <DialogDescription>
-            Create a new Surprise Bag to sell your surplus food.
+            {isEditing ? 'Update the details of your Surprise Bag.' : 'Create a new Surprise Bag to sell your surplus food.'}
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
@@ -144,7 +156,7 @@ export function AddListingDialog({
                 <DialogClose asChild>
                     <Button type="button" variant="outline">Cancel</Button>
                 </DialogClose>
-                <Button type="submit">Save Listing</Button>
+                <Button type="submit">{isEditing ? 'Save Changes' : 'Save Listing'}</Button>
             </DialogFooter>
           </form>
         </Form>
