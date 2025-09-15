@@ -23,7 +23,6 @@ import { Label } from "@/components/ui/label";
 import Link from "next/link";
 import { ArrowRight, Loader2 } from "lucide-react";
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
-import { useToast } from '@/hooks/use-toast';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -33,6 +32,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { useAuth } from '@/contexts/auth-context';
 
 
 const signupSchema = z.object({
@@ -53,7 +53,7 @@ export default function BusinessSignupPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
   const router = useRouter();
-  const { toast } = useToast();
+  const { login } = useAuth();
 
   const form = useForm<SignupFormValues>({
     resolver: zodResolver(signupSchema),
@@ -72,12 +72,14 @@ export default function BusinessSignupPage() {
     // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 1500));
     setIsLoading(false);
+    // Log the user in after successful signup
+    login({ name: values.contactName, email: values.email });
     setShowSuccessDialog(true);
   };
   
   const handleDialogContinue = () => {
     setShowSuccessDialog(false);
-    router.push('/login');
+    router.push('/');
   };
 
   return (
@@ -208,11 +210,11 @@ export default function BusinessSignupPage() {
           <AlertDialogHeader>
             <AlertDialogTitle>Account Created Successfully!</AlertDialogTitle>
             <AlertDialogDescription>
-              Welcome to ResQ! You can now log in to your business dashboard.
+              Welcome to ResQ! You will be redirected to the homepage.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogAction onClick={handleDialogContinue}>Continue to Login</AlertDialogAction>
+            <AlertDialogAction onClick={handleDialogContinue}>Continue</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

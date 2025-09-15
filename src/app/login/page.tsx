@@ -24,6 +24,7 @@ import Link from "next/link";
 import { Loader2 } from 'lucide-react';
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
 import { useToast } from '@/hooks/use-toast';
+import { useAuth } from '@/contexts/auth-context';
 
 const loginSchema = z.object({
   email: z.string().email('Invalid email address'),
@@ -36,6 +37,7 @@ export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const { toast } = useToast();
+  const { login } = useAuth();
 
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
@@ -49,6 +51,7 @@ export default function LoginPage() {
     setIsLoading(true);
     // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 1000));
+    login({ name: 'Partner', email: values.email });
     setIsLoading(false);
     toast({
       title: "Login Successful",

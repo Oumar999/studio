@@ -4,21 +4,30 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ResQLogo } from "@/components/icons";
-import { Menu, X } from "lucide-react";
+import { Menu, X, LayoutDashboard } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/contexts/auth-context";
+import { useRouter } from "next/navigation";
 
 const navLinks = [
-  { href: "#hero", label: "Home" },
-  { href: "#impact", label: "Impact" },
-  { href: "#business", label: "For Business" },
-  { href: "#about", label: "About" },
+  { href: "/#hero", label: "Home" },
+  { href: "/#impact", label: "Impact" },
+  { href: "/#business", label: "For Business" },
+  { href: "/#about", label: "About" },
 ];
 
 export function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isHidden, setIsHidden] = useState(false);
   const [lastScrollY, setLastScrollY] = useState(0);
+  const { user, logout } = useAuth();
+  const router = useRouter();
+
+  const handleLogout = () => {
+    logout();
+    router.push('/');
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -63,12 +72,24 @@ export function Header() {
             ))}
           </nav>
           <div className="hidden md:flex items-center gap-2">
-            <Link href="/login" passHref>
-              <Button variant="ghost">Business Login</Button>
-            </Link>
-            <Link href="#download">
-              <Button className="font-headline bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg hover:scale-105 transition-transform duration-300">Download App</Button>
-            </Link>
+            {user ? (
+              <>
+                <Button variant="ghost">
+                  <LayoutDashboard className="mr-2 h-4 w-4" />
+                  Dashboard
+                </Button>
+                <Button onClick={handleLogout} variant="outline">Log Out</Button>
+              </>
+            ) : (
+              <>
+                <Link href="/login" passHref>
+                  <Button variant="ghost">Business Login</Button>
+                </Link>
+                <Link href="/#download">
+                  <Button className="font-headline bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg hover:scale-105 transition-transform duration-300">Download App</Button>
+                </Link>
+              </>
+            )}
           </div>
           <div className="md:hidden">
             <Sheet>
@@ -95,12 +116,24 @@ export function Header() {
                     ))}
                   </nav>
                   <div className="mt-8 flex flex-col gap-4">
-                    <Link href="/login" passHref>
-                      <Button variant="ghost" size="lg">Business Login</Button>
-                    </Link>
-                    <Link href="#download">
-                      <Button size="lg" className="font-headline bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg w-full">Download App</Button>
-                    </Link>
+                    {user ? (
+                      <>
+                        <Button variant="ghost" size="lg">
+                          <LayoutDashboard className="mr-2 h-5 w-5" />
+                          Dashboard
+                        </Button>
+                        <Button onClick={handleLogout} variant="outline" size="lg">Log Out</Button>
+                      </>
+                    ) : (
+                      <>
+                        <Link href="/login" passHref>
+                          <Button variant="ghost" size="lg">Business Login</Button>
+                        </Link>
+                        <Link href="#download">
+                          <Button size="lg" className="font-headline bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg w-full">Download App</Button>
+                        </Link>
+                      </>
+                    )}
                   </div>
                 </div>
               </SheetContent>
