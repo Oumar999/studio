@@ -13,7 +13,7 @@ import { AnimatedCounter } from "@/components/animated-counter";
 function HeroSection() {
   const heroImage = getImage('hero-background');
   return (
-    <section className="relative h-[80vh] min-h-[600px] text-white flex items-center">
+    <section id="hero" className="relative h-[80vh] min-h-[600px] text-white flex items-center">
       <div className="absolute inset-0">
         <Image
           src={heroImage?.imageUrl || "https://picsum.photos/seed/1/1920/1080"}
@@ -109,7 +109,7 @@ function HowItWorks() {
     },
   ];
   return (
-    <section className="py-20 sm:py-32 bg-card">
+    <section id="about" className="py-20 sm:py-32 bg-card">
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
           <h2 className="font-headline text-4xl md:text-5xl font-bold">How ResQ Works</h2>
@@ -136,7 +136,7 @@ function HowItWorks() {
 
 function ImpactDemo() {
   return (
-    <section className="py-20 sm:py-32 bg-background">
+    <section id="impact" className="py-20 sm:py-32 bg-background">
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
           <h2 className="font-headline text-4xl md:text-5xl font-bold">Calculate Your Potential Impact</h2>
@@ -214,7 +214,7 @@ function SocialProof() {
 function BusinessProposition() {
   const mapImage = getImage('map-amsterdam');
   return (
-    <section className="py-20 sm:py-32 bg-background">
+    <section id="business" className="py-20 sm:py-32 bg-background">
       <div className="container mx-auto px-4">
         <div className="grid md:grid-cols-2 gap-16 items-center">
           <div>

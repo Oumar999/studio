@@ -9,10 +9,10 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
 
 const navLinks = [
-  { href: "#", label: "Home" },
-  { href: "#", label: "Impact" },
-  { href: "#", label: "For Business" },
-  { href: "#", label: "About" },
+  { href: "#hero", label: "Home" },
+  { href: "#impact", label: "Impact" },
+  { href: "#business", label: "For Business" },
+  { href: "#about", label: "About" },
 ];
 
 export function Header() {
@@ -54,7 +54,7 @@ export function Header() {
           <nav className="hidden md:flex items-center gap-6">
             {navLinks.map((link) => (
               <Link
-                key={link.href}
+                key={`${link.href}-${link.label}`}
                 href={link.href}
                 className="font-semibold text-foreground/80 hover:text-primary transition-colors"
               >
@@ -82,7 +82,7 @@ export function Header() {
                   <nav className="flex flex-col gap-6 text-lg">
                     {navLinks.map((link) => (
                       <Link
-                        key={link.href}
+                        key={`${link.href}-${link.label}-mobile`}
                         href={link.href}
                         className="font-semibold text-foreground/80 hover:text-primary transition-colors"
                       >
