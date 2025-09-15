@@ -1,3 +1,52 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "hero-background",
+      "description": "A vibrant and colorful flat lay of various fresh foods.",
+      "imageUrl": "https://picsum.photos/seed/hero-bg/1920/1080",
+      "imageHint": "food variety"
+    },
+    {
+      "id": "testimonial-1",
+      "description": "Portrait of Maria V.",
+      "imageUrl": "https://picsum.photos/seed/maria/100/100",
+      "imageHint": "person portrait"
+    },
+    {
+      "id": "testimonial-2",
+      "description": "Portrait of Ahmed K.",
+      "imageUrl": "https://picsum.photos/seed/ahmed/100/100",
+      "imageHint": "person portrait"
+    },
+    {
+      "id": "testimonial-3",
+      "description": "Portrait of Sophie L.",
+      "imageUrl": "https://picsum.photos/seed/sophie/100/100",
+      "imageHint": "person portrait"
+    },
+    {
+      "id": "map-amsterdam",
+      "description": "A stylized map of Amsterdam showing various points of interest.",
+      "imageUrl": "https://picsum.photos/seed/map-ams/600/500",
+      "imageHint": "city map"
+    },
+    {
+      "id": "qr-code",
+      "description": "A QR code for downloading the ResQ app.",
+      "imageUrl": "https://picsum.photos/seed/qrcode/150/150",
+      "imageHint": "QR code"
+    },
+    {
+      "id": "app-store",
+      "description": "Download on the App Store badge.",
+      "imageUrl": "https://picsum.photos/seed/appstore/180/60",
+      "imageHint": "App Store badge"
+    },
+    {
+      "id": "google-play",
+      "description": "Get it on Google Play badge.",
+      "imageUrl": "https://picsum.photos/seed/playstore/180/60",
+      "imageHint": "Google Play badge"
+    }
+  ]
 }
