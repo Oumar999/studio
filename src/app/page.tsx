@@ -37,12 +37,12 @@ function HeroSection() {
           <p>Join thousands of food heroes in the Netherlands rescuing delicious, unsold food from local bakeries, cafes, and restaurants from going to waste.</p>
         </div>
         <div className="flex flex-col sm:flex-row justify-center items-center gap-4">
-          <Link href="#download" passHref>
+          <Link href="/signup" passHref>
             <Button size="lg" className="font-headline bg-primary hover:bg-primary/90 text-primary-foreground text-lg px-8 py-6 rounded-xl shadow-lg hover:scale-105 transition-transform duration-300">
               Join 12,000+ Food Heroes
             </Button>
           </Link>
-          <Link href="#business" passHref>
+          <Link href="/business-signup" passHref>
             <Button size="lg" variant="outline" className="font-headline bg-transparent border-2 border-white text-white hover:bg-white hover:text-black text-lg px-8 py-6 rounded-xl shadow-lg hover:scale-105 transition-transform duration-300">
               Partner with Us
             </Button>
@@ -330,3 +330,5 @@ export default function Home() {
     </div>
   );
 }
+
+    

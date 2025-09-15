@@ -5,6 +5,7 @@ import React, { createContext, useContext, useState, useEffect, ReactNode } from
 interface User {
   name: string;
   email: string;
+  type: 'customer' | 'business';
 }
 
 interface AuthContextType {
@@ -63,3 +64,5 @@ export function useAuth() {
   }
   return context;
 }
+
+    

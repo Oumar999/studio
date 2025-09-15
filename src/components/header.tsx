@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ResQLogo } from "@/components/icons";
-import { Menu, X, LayoutDashboard } from "lucide-react";
+import { Menu, X, LayoutDashboard, ShoppingBasket } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/contexts/auth-context";
@@ -70,25 +70,36 @@ export function Header() {
                 {link.label}
               </Link>
             ))}
+             {user && user.type === 'customer' && (
+                <Link
+                    href="/food"
+                    className="font-semibold text-primary hover:text-primary/80 transition-colors flex items-center gap-2"
+                >
+                    <ShoppingBasket className="w-4 h-4" />
+                    Browse Food
+                </Link>
+            )}
           </nav>
           <div className="hidden md:flex items-center gap-2">
             {user ? (
               <>
-                <Link href="/dashboard" passHref>
-                  <Button variant="ghost">
-                    <LayoutDashboard className="mr-2 h-4 w-4" />
-                    Dashboard
-                  </Button>
-                </Link>
+                {user.type === 'business' && (
+                    <Link href="/dashboard" passHref>
+                        <Button variant="ghost">
+                        <LayoutDashboard className="mr-2 h-4 w-4" />
+                        Dashboard
+                        </Button>
+                    </Link>
+                )}
                 <Button onClick={handleLogout} variant="outline">Log Out</Button>
               </>
             ) : (
               <>
                 <Link href="/login" passHref>
-                  <Button variant="ghost">Business Login</Button>
+                  <Button variant="ghost">Login</Button>
                 </Link>
-                <Link href="/#download" passHref>
-                  <Button className="font-headline bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg hover:scale-105 transition-transform duration-300">Download App</Button>
+                <Link href="/signup" passHref>
+                  <Button className="font-headline bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg hover:scale-105 transition-transform duration-300">Join Now</Button>
                 </Link>
               </>
             )}
@@ -116,25 +127,36 @@ export function Header() {
                         {link.label}
                       </Link>
                     ))}
+                     {user && user.type === 'customer' && (
+                        <Link
+                            href="/food"
+                            className="font-semibold text-primary hover:text-primary/80 transition-colors flex items-center gap-2"
+                        >
+                            <ShoppingBasket className="w-5 h-5" />
+                            Browse Food
+                        </Link>
+                    )}
                   </nav>
                   <div className="mt-8 flex flex-col gap-4">
                     {user ? (
                       <>
-                        <Link href="/dashboard" passHref>
-                          <Button variant="ghost" size="lg" className="w-full justify-start">
-                            <LayoutDashboard className="mr-2 h-5 w-5" />
-                            Dashboard
-                          </Button>
-                        </Link>
+                        {user.type === 'business' && (
+                            <Link href="/dashboard" passHref>
+                                <Button variant="ghost" size="lg" className="w-full justify-start">
+                                <LayoutDashboard className="mr-2 h-5 w-5" />
+                                Dashboard
+                                </Button>
+                            </Link>
+                        )}
                         <Button onClick={handleLogout} variant="outline" size="lg">Log Out</Button>
                       </>
                     ) : (
                       <>
                         <Link href="/login" passHref>
-                          <Button variant="ghost" size="lg" className="w-full justify-start">Business Login</Button>
+                          <Button variant="ghost" size="lg" className="w-full justify-start">Login</Button>
                         </Link>
-                        <Link href="#download" passHref>
-                          <Button size="lg" className="font-headline bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg w-full">Download App</Button>
+                        <Link href="/signup" passHref>
+                          <Button size="lg" className="font-headline bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg w-full">Join Now</Button>
                         </Link>
                       </>
                     )}
@@ -148,3 +170,5 @@ export function Header() {
     </header>
   );
 }
+
+    

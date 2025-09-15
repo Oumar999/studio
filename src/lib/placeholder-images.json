@@ -53,6 +53,32 @@
       "description": "Avatar for a logged in user.",
       "imageUrl": "https://picsum.photos/seed/user-avatar/100/100",
       "imageHint": "person portrait"
+    },
+    {
+      "id": "business-bakery",
+      "description": "The storefront of a local bakery.",
+      "imageUrl": "https://picsum.photos/seed/b-bakery/400/250",
+      "imageHint": "bakery storefront"
+    },
+     {
+      "id": "hero-bakery",
+      "description": "A beautiful spread of baked goods inside a bakery.",
+      "imageUrl": "https://picsum.photos/seed/h-bakery/1200/400",
+      "imageHint": "baked goods"
+    },
+    {
+      "id": "business-grocer",
+      "description": "A local grocery store with fresh produce.",
+      "imageUrl": "https://picsum.photos/seed/b-grocer/400/250",
+      "imageHint": "grocery store"
+    },
+    {
+      "id": "business-restaurant",
+      "description": "The interior of a cozy restaurant.",
+      "imageUrl": "https://picsum.photos/seed/b-restaurant/400/250",
+      "imageHint": "restaurant interior"
     }
   ]
 }
+
+    
