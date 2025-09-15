@@ -26,14 +26,12 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { MoreHorizontal, PlusCircle } from 'lucide-react';
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
+import { AddListingDialog } from '@/components/add-listing-dialog';
+import { type Listing } from '@/types/listing';
 
-type ListingStatus = 'all' | 'active' | 'sold-out' | 'draft';
 
-export default function ListingsPage() {
-  const [activeTab, setActiveTab] = useState<ListingStatus>('all');
-  
-  const listings = [
+const initialListings: Listing[] = [
     {
       id: '1',
       name: 'Surprise Bag - Pastries',
@@ -76,98 +74,121 @@ export default function ListingsPage() {
     },
   ];
 
+type ListingStatus = 'all' | 'active' | 'sold-out' | 'draft';
+
+export default function ListingsPage() {
+  const [activeTab, setActiveTab] = useState<ListingStatus>('all');
+  const [listings, setListings] = useState<Listing[]>(initialListings);
+  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+  
+  const handleAddListing = (newListingData: Omit<Listing, 'id' | 'status'>) => {
+    const newListing: Listing = {
+        ...newListingData,
+        id: (listings.length + 1).toString(),
+        status: newListingData.quantity > 0 ? 'active' : 'sold-out',
+    };
+    setListings(prevListings => [newListing, ...prevListings]);
+  };
+
   const filteredListings = activeTab === 'all' 
     ? listings 
     : listings.filter(l => l.status === activeTab);
 
   return (
-    <Tabs defaultValue="all" onValueChange={(value) => setActiveTab(value as ListingStatus)}>
-        <div className="flex items-center">
-             <TabsList>
-                <TabsTrigger value="all">All</TabsTrigger>
-                <TabsTrigger value="active">Active</TabsTrigger>
-                <TabsTrigger value="sold-out">Sold Out</TabsTrigger>
-                <TabsTrigger value="draft">Draft</TabsTrigger>
-            </TabsList>
-            <div className="ml-auto">
-                <Button>
-                    <PlusCircle className="mr-2 h-4 w-4" />
-                    Add Listing
-                </Button>
-            </div>
-        </div>
-      <Card className="mt-4">
-        <CardHeader>
-          <CardTitle>Manage Your Listings</CardTitle>
-          <CardDescription>
-            View, edit, and create new Surprise Bags for your customers.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Name</TableHead>
-                <TableHead>Price</TableHead>
-                <TableHead>Quantity Left</TableHead>
-                <TableHead>Pickup Time</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>
-                  <span className="sr-only">Actions</span>
-                </TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {filteredListings.length > 0 ? (
-                filteredListings.map((listing) => (
-                  <TableRow key={listing.id}>
-                    <TableCell className="font-medium">{listing.name}</TableCell>
-                    <TableCell>€{listing.price.toFixed(2)}</TableCell>
-                    <TableCell>{listing.quantity}</TableCell>
-                    <TableCell>{listing.pickupTime}</TableCell>
-                    <TableCell>
-                      <Badge
-                        variant={
-                          listing.status === 'active'
-                            ? 'default'
-                            : listing.status === 'sold-out'
-                            ? 'destructive'
-                            : 'secondary'
-                        }
-                        className={listing.status === 'active' ? 'bg-green-600' : ''}
-                      >
-                        {listing.status}
-                      </Badge>
-                    </TableCell>
-                    <TableCell>
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" className="h-8 w-8 p-0">
-                            <span className="sr-only">Open menu</span>
-                            <MoreHorizontal className="h-4 w-4" />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuItem>Edit</DropdownMenuItem>
-                          <DropdownMenuItem>Duplicate</DropdownMenuItem>
-                          <DropdownMenuItem>Pause</DropdownMenuItem>
-                          <DropdownMenuItem className="text-red-500">Delete</DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
+    <>
+      <Tabs defaultValue="all" onValueChange={(value) => setActiveTab(value as ListingStatus)}>
+          <div className="flex items-center">
+              <TabsList>
+                  <TabsTrigger value="all">All</TabsTrigger>
+                  <TabsTrigger value="active">Active</TabsTrigger>
+                  <TabsTrigger value="sold-out">Sold Out</TabsTrigger>
+                  <TabsTrigger value="draft">Draft</TabsTrigger>
+              </TabsList>
+              <div className="ml-auto">
+                  <Button onClick={() => setIsAddDialogOpen(true)}>
+                      <PlusCircle className="mr-2 h-4 w-4" />
+                      Add Listing
+                  </Button>
+              </div>
+          </div>
+        <Card className="mt-4">
+          <CardHeader>
+            <CardTitle>Manage Your Listings</CardTitle>
+            <CardDescription>
+              View, edit, and create new Surprise Bags for your customers.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Name</TableHead>
+                  <TableHead>Price</TableHead>
+                  <TableHead>Quantity Left</TableHead>
+                  <TableHead>Pickup Time</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>
+                    <span className="sr-only">Actions</span>
+                  </TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {filteredListings.length > 0 ? (
+                  filteredListings.map((listing) => (
+                    <TableRow key={listing.id}>
+                      <TableCell className="font-medium">{listing.name}</TableCell>
+                      <TableCell>€{listing.price.toFixed(2)}</TableCell>
+                      <TableCell>{listing.quantity}</TableCell>
+                      <TableCell>{listing.pickupTime}</TableCell>
+                      <TableCell>
+                        <Badge
+                          variant={
+                            listing.status === 'active'
+                              ? 'default'
+                              : listing.status === 'sold-out'
+                              ? 'destructive'
+                              : 'secondary'
+                          }
+                          className={listing.status === 'active' ? 'bg-green-600' : ''}
+                        >
+                          {listing.status}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" className="h-8 w-8 p-0">
+                              <span className="sr-only">Open menu</span>
+                              <MoreHorizontal className="h-4 w-4" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuItem>Edit</DropdownMenuItem>
+                            <DropdownMenuItem>Duplicate</DropdownMenuItem>
+                            <DropdownMenuItem>Pause</DropdownMenuItem>
+                            <DropdownMenuItem className="text-red-500">Delete</DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </TableCell>
+                    </TableRow>
+                  ))
+                ) : (
+                  <TableRow>
+                    <TableCell colSpan={6} className="h-24 text-center">
+                      No listings found for this category.
                     </TableCell>
                   </TableRow>
-                ))
-              ) : (
-                <TableRow>
-                  <TableCell colSpan={6} className="h-24 text-center">
-                    No listings found for this category.
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
-    </Tabs>
+                )}
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
+      </Tabs>
+      <AddListingDialog 
+        isOpen={isAddDialogOpen}
+        onOpenChange={setIsAddDialogOpen}
+        onAddListing={handleAddListing}
+      />
+    </>
   );
 }
