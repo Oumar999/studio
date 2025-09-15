@@ -47,6 +47,12 @@
       "description": "Get it on Google Play badge.",
       "imageUrl": "https://picsum.photos/seed/playstore/180/60",
       "imageHint": "Google Play badge"
+    },
+    {
+      "id": "user-avatar",
+      "description": "Avatar for a logged in user.",
+      "imageUrl": "https://picsum.photos/seed/user-avatar/100/100",
+      "imageHint": "person portrait"
     }
   ]
 }

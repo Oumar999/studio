@@ -74,10 +74,12 @@ export function Header() {
           <div className="hidden md:flex items-center gap-2">
             {user ? (
               <>
-                <Button variant="ghost">
-                  <LayoutDashboard className="mr-2 h-4 w-4" />
-                  Dashboard
-                </Button>
+                <Link href="/dashboard" passHref>
+                  <Button variant="ghost">
+                    <LayoutDashboard className="mr-2 h-4 w-4" />
+                    Dashboard
+                  </Button>
+                </Link>
                 <Button onClick={handleLogout} variant="outline">Log Out</Button>
               </>
             ) : (
@@ -85,7 +87,7 @@ export function Header() {
                 <Link href="/login" passHref>
                   <Button variant="ghost">Business Login</Button>
                 </Link>
-                <Link href="/#download">
+                <Link href="/#download" passHref>
                   <Button className="font-headline bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg hover:scale-105 transition-transform duration-300">Download App</Button>
                 </Link>
               </>
@@ -118,18 +120,20 @@ export function Header() {
                   <div className="mt-8 flex flex-col gap-4">
                     {user ? (
                       <>
-                        <Button variant="ghost" size="lg">
-                          <LayoutDashboard className="mr-2 h-5 w-5" />
-                          Dashboard
-                        </Button>
+                        <Link href="/dashboard" passHref>
+                          <Button variant="ghost" size="lg" className="w-full justify-start">
+                            <LayoutDashboard className="mr-2 h-5 w-5" />
+                            Dashboard
+                          </Button>
+                        </Link>
                         <Button onClick={handleLogout} variant="outline" size="lg">Log Out</Button>
                       </>
                     ) : (
                       <>
                         <Link href="/login" passHref>
-                          <Button variant="ghost" size="lg">Business Login</Button>
+                          <Button variant="ghost" size="lg" className="w-full justify-start">Business Login</Button>
                         </Link>
-                        <Link href="#download">
+                        <Link href="#download" passHref>
                           <Button size="lg" className="font-headline bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg w-full">Download App</Button>
                         </Link>
                       </>
