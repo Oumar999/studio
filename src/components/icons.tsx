@@ -17,8 +17,8 @@ export const MoroccanPattern = ({ className }: { className?: string }) => (
       <defs>
         <pattern id='a' patternUnits='userSpaceOnUse' width='80' height='80' patternTransform='scale(1) rotate(0)'>
           <rect x='0' y='0' width='100%' height='100%' fill='hsla(0,0%,100%,0)'/>
-          <path d='M40 0L40 80M0 40L80 40' stroke-width='1' stroke='hsl(var(--primary) / 0.1)' fill='none'/>
-          <path d='M20 20L20 60L60 60L60 20z' stroke-width='1' stroke='hsl(var(--primary) / 0.1)' fill='none'/>
+          <path d='M40 0L40 80M0 40L80 40' strokeWidth='1' stroke='hsl(var(--primary) / 0.1)' fill='none'/>
+          <path d='M20 20L20 60L60 60L60 20z' strokeWidth='1' stroke='hsl(var(--primary) / 0.1)' fill='none'/>
         </pattern>
       </defs>
       <rect width='100%' height='100%' fill='url(#a)'/>
