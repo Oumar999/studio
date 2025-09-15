@@ -1,7 +1,7 @@
 // src/app/restaurants/[id]/page.tsx
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { useAuth } from '@/contexts/auth-context';
@@ -20,6 +20,17 @@ import { Button } from '@/components/ui/button';
 import { Clock, MapPin, Star, Utensils } from 'lucide-react';
 import { type Listing } from '@/types/listing';
 import { getImage } from '@/lib/images';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { useToast } from '@/hooks/use-toast';
 
 // Mock data
 const mockBusiness = {
@@ -33,7 +44,7 @@ const mockBusiness = {
     heroImageId: 'hero-bakery',
 };
 
-const mockListings: Listing[] = [
+const initialMockListings: Listing[] = [
   {
     id: '1',
     name: 'Surprise Bag - Pastries',
@@ -57,6 +68,10 @@ export default function RestaurantPage({ params }: { params: { id: string } }) {
   const { user } = useAuth();
   const router = useRouter();
   const { id } = params;
+  
+  const [listings, setListings] = useState(initialMockListings);
+  const [listingToReserve, setListingToReserve] = useState<Listing | null>(null);
+  const { toast } = useToast();
 
   useEffect(() => {
     if (!user) {
@@ -64,9 +79,37 @@ export default function RestaurantPage({ params }: { params: { id: string } }) {
     }
   }, [user, router, id]);
   
+  const handleReserveClick = (listing: Listing) => {
+    setListingToReserve(listing);
+  };
+
+  const handleConfirmReservation = () => {
+    if (!listingToReserve) return;
+
+    setListings(prevListings =>
+      prevListings.map(l => {
+        if (l.id === listingToReserve.id) {
+          const newQuantity = l.quantity - 1;
+          return {
+            ...l,
+            quantity: newQuantity,
+            status: newQuantity > 0 ? 'active' : 'sold-out',
+          };
+        }
+        return l;
+      })
+    );
+
+    toast({
+      title: 'Reservation Confirmed!',
+      description: `You've reserved "${listingToReserve.name}". Pick it up between ${listingToReserve.pickupTime}.`,
+    });
+    setListingToReserve(null);
+  };
+  
   // In a real app, you would fetch business data and listings based on params.id
   const business = mockBusiness;
-  const listings = mockListings.filter(l => l.status === 'active');
+  const activeListings = listings.filter(l => l.status === 'active');
   const heroImage = getImage(business.heroImageId);
   const logoImage = getImage(business.imageId);
 
@@ -76,6 +119,7 @@ export default function RestaurantPage({ params }: { params: { id: string } }) {
   }
 
   return (
+    <>
     <div className="flex min-h-screen flex-col bg-background">
       <Header />
       <main className="flex-grow">
@@ -127,9 +171,9 @@ export default function RestaurantPage({ params }: { params: { id: string } }) {
                 <Utensils />
                 Available Today
             </h2>
-            {listings.length > 0 ? (
+            {activeListings.length > 0 ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {listings.map(listing => (
+                    {activeListings.map(listing => (
                         <Card key={listing.id}>
                             <CardHeader>
                                 <CardTitle>{listing.name}</CardTitle>
@@ -142,7 +186,7 @@ export default function RestaurantPage({ params }: { params: { id: string } }) {
                             </CardContent>
                             <CardFooter className="flex justify-between items-center">
                                 <span className="font-bold text-2xl text-primary">€{listing.price.toFixed(2)}</span>
-                                <Button size="lg" disabled={listing.quantity === 0}>
+                                <Button size="lg" disabled={listing.quantity === 0} onClick={() => handleReserveClick(listing)}>
                                     {listing.quantity > 0 ? `Reserve (${listing.quantity} left)`: 'Sold Out'}
                                 </Button>
                             </CardFooter>
@@ -162,5 +206,21 @@ export default function RestaurantPage({ params }: { params: { id: string } }) {
       </main>
       <Footer />
     </div>
+
+     <AlertDialog open={!!listingToReserve} onOpenChange={(open) => !open && setListingToReserve(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Confirm Reservation</AlertDialogTitle>
+            <AlertDialogDescription>
+              You are about to reserve "{listingToReserve?.name}" for €{listingToReserve?.price.toFixed(2)}. Do you want to continue?
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => setListingToReserve(null)}>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={handleConfirmReservation}>Confirm</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
   );
 }

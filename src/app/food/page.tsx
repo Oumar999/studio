@@ -20,9 +20,22 @@ import { Button } from '@/components/ui/button';
 import { Clock, MapPin, Star } from 'lucide-react';
 import { type Listing } from '@/types/listing';
 import { getImage } from '@/lib/images';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { useToast } from '@/hooks/use-toast';
+
+type FullListing = Listing & { business: { id: string, name: string, location: string, rating: number, imageId: string } };
 
 // Mock data - in a real app, this would come from an API
-const allListings: (Listing & { business: { id: string, name: string, location: string, rating: number, imageId: string } })[] = [
+const allListings: FullListing[] = [
   {
     id: '1',
     name: 'Surprise Bag - Pastries',
@@ -73,7 +86,9 @@ const allListings: (Listing & { business: { id: string, name: string, location: 
 export default function FoodPage() {
   const { user } = useAuth();
   const router = useRouter();
-  const [listings, setListings] = useState(allListings.filter(l => l.status === 'active'));
+  const [listings, setListings] = useState(allListings);
+  const [listingToReserve, setListingToReserve] = useState<FullListing | null>(null);
+  const { toast } = useToast();
 
   useEffect(() => {
     if (!user) {
@@ -84,12 +99,45 @@ export default function FoodPage() {
     }
   }, [user, router]);
 
+  const handleReserveClick = (e: React.MouseEvent, listing: FullListing) => {
+    e.preventDefault(); // Prevent link navigation
+    e.stopPropagation();
+    setListingToReserve(listing);
+  };
+
+  const handleConfirmReservation = () => {
+    if (!listingToReserve) return;
+
+    setListings(prevListings =>
+      prevListings.map(l => {
+        if (l.id === listingToReserve.id) {
+          const newQuantity = l.quantity - 1;
+          return {
+            ...l,
+            quantity: newQuantity,
+            status: newQuantity > 0 ? 'active' : 'sold-out',
+          };
+        }
+        return l;
+      })
+    );
+
+    toast({
+      title: 'Reservation Confirmed!',
+      description: `You've reserved "${listingToReserve.name}". Pick it up from ${listingToReserve.business.name} between ${listingToReserve.pickupTime}.`,
+    });
+    setListingToReserve(null);
+  };
+
+  const activeListings = listings.filter(l => l.status === 'active');
+
   if (!user || user.type !== 'customer') {
     // Render nothing or a loading spinner while redirecting
     return null;
   }
 
   return (
+    <>
     <div className="flex min-h-screen flex-col bg-muted/30">
       <Header />
       <main className="flex-grow">
@@ -98,7 +146,7 @@ export default function FoodPage() {
           <p className="text-muted-foreground mb-8">Browse Surprise Bags available near you.</p>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {listings.map(listing => {
+            {activeListings.map(listing => {
                const image = getImage(listing.business.imageId);
                return (
                 <Card key={listing.id} className="overflow-hidden transform hover:-translate-y-1 transition-transform duration-300 shadow-md hover:shadow-xl">
@@ -112,9 +160,11 @@ export default function FoodPage() {
                             className="object-cover w-full h-48"
                             data-ai-hint={image?.imageHint}
                         />
-                        <Badge className="absolute top-2 right-2">
-                           {listing.quantity} left
-                        </Badge>
+                         {listing.quantity > 0 && 
+                            <Badge className="absolute top-2 right-2">
+                                {listing.quantity} left
+                            </Badge>
+                         }
                     </div>
                     <CardHeader>
                         <CardTitle className="text-lg">{listing.name}</CardTitle>
@@ -135,7 +185,7 @@ export default function FoodPage() {
                     </CardContent>
                     <CardFooter className="flex justify-between items-center">
                         <span className="font-bold text-xl text-primary">€{listing.price.toFixed(2)}</span>
-                        <Button>Reserve</Button>
+                        <Button onClick={(e) => handleReserveClick(e, listing)}>Reserve</Button>
                     </CardFooter>
                   </Link>
                 </Card>
@@ -145,7 +195,21 @@ export default function FoodPage() {
       </main>
       <Footer />
     </div>
+
+    <AlertDialog open={!!listingToReserve} onOpenChange={(open) => !open && setListingToReserve(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Confirm Reservation</AlertDialogTitle>
+            <AlertDialogDescription>
+              You are about to reserve "{listingToReserve?.name}" for €{listingToReserve?.price.toFixed(2)}. Do you want to continue?
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => setListingToReserve(null)}>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={handleConfirmReservation}>Confirm</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
   );
 }
-
-    
