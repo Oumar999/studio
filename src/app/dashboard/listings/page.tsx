@@ -1,11 +1,11 @@
 // src/app/dashboard/listings/page.tsx
 'use client';
 
+import { useState } from 'react';
 import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
@@ -26,9 +26,13 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { MoreHorizontal, PlusCircle } from 'lucide-react';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+
+type ListingStatus = 'all' | 'active' | 'sold-out' | 'draft';
 
 export default function ListingsPage() {
+  const [activeTab, setActiveTab] = useState<ListingStatus>('all');
+  
   const listings = [
     {
       id: '1',
@@ -72,60 +76,12 @@ export default function ListingsPage() {
     },
   ];
 
-  const renderTableRows = (statusFilter: string) => {
-      const filtered = statusFilter === 'all' ? listings : listings.filter(l => l.status === statusFilter);
-
-      if (filtered.length === 0) {
-          return (
-              <TableRow>
-                  <TableCell colSpan={6} className="h-24 text-center">
-                      No listings found.
-                  </TableCell>
-              </TableRow>
-          )
-      }
-      return filtered.map((listing) => (
-        <TableRow key={listing.id}>
-          <TableCell className="font-medium">{listing.name}</TableCell>
-          <TableCell>€{listing.price.toFixed(2)}</TableCell>
-          <TableCell>{listing.quantity}</TableCell>
-          <TableCell>{listing.pickupTime}</TableCell>
-          <TableCell>
-            <Badge
-              variant={
-                listing.status === 'active'
-                  ? 'default'
-                  : listing.status === 'sold-out'
-                  ? 'destructive'
-                  : 'secondary'
-              }
-              className={listing.status === 'active' ? 'bg-green-600' : ''}
-            >
-              {listing.status}
-            </Badge>
-          </TableCell>
-          <TableCell>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="h-8 w-8 p-0">
-                  <span className="sr-only">Open menu</span>
-                  <MoreHorizontal className="h-4 w-4" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem>Edit</DropdownMenuItem>
-                <DropdownMenuItem>Duplicate</DropdownMenuItem>
-                <DropdownMenuItem>Pause</DropdownMenuItem>
-                <DropdownMenuItem className="text-red-500">Delete</DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </TableCell>
-        </TableRow>
-      ));
-  }
+  const filteredListings = activeTab === 'all' 
+    ? listings 
+    : listings.filter(l => l.status === activeTab);
 
   return (
-    <Tabs defaultValue="all">
+    <Tabs defaultValue="all" onValueChange={(value) => setActiveTab(value as ListingStatus)}>
         <div className="flex items-center">
              <TabsList>
                 <TabsTrigger value="all">All</TabsTrigger>
@@ -162,10 +118,52 @@ export default function ListingsPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-                <TabsContent value="all">{renderTableRows('all')}</TabsContent>
-                <TabsContent value="active">{renderTableRows('active')}</TabsContent>
-                <TabsContent value="sold-out">{renderTableRows('sold-out')}</TabsContent>
-                <TabsContent value="draft">{renderTableRows('draft')}</TabsContent>
+              {filteredListings.length > 0 ? (
+                filteredListings.map((listing) => (
+                  <TableRow key={listing.id}>
+                    <TableCell className="font-medium">{listing.name}</TableCell>
+                    <TableCell>€{listing.price.toFixed(2)}</TableCell>
+                    <TableCell>{listing.quantity}</TableCell>
+                    <TableCell>{listing.pickupTime}</TableCell>
+                    <TableCell>
+                      <Badge
+                        variant={
+                          listing.status === 'active'
+                            ? 'default'
+                            : listing.status === 'sold-out'
+                            ? 'destructive'
+                            : 'secondary'
+                        }
+                        className={listing.status === 'active' ? 'bg-green-600' : ''}
+                      >
+                        {listing.status}
+                      </Badge>
+                    </TableCell>
+                    <TableCell>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="ghost" className="h-8 w-8 p-0">
+                            <span className="sr-only">Open menu</span>
+                            <MoreHorizontal className="h-4 w-4" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuItem>Edit</DropdownMenuItem>
+                          <DropdownMenuItem>Duplicate</DropdownMenuItem>
+                          <DropdownMenuItem>Pause</DropdownMenuItem>
+                          <DropdownMenuItem className="text-red-500">Delete</DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </TableCell>
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell colSpan={6} className="h-24 text-center">
+                    No listings found for this category.
+                  </TableCell>
+                </TableRow>
+              )}
             </TableBody>
           </Table>
         </CardContent>
