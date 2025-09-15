@@ -26,9 +26,9 @@ const footerLinks = {
 };
 
 const socialLinks = [
-    { href: '#', icon: <Twitter className="h-5 w-5" />, label: 'Twitter' },
-    { href: '#', icon: <Instagram className="h-5 w-5" />, label: 'Instagram' },
-    { href: '#', icon: <Github className="h-5 w-5" />, label: 'Github' },
+    { href: 'https://twitter.com', icon: <Twitter className="h-5 w-5" />, label: 'Twitter' },
+    { href: 'https://instagram.com', icon: <Instagram className="h-5 w-5" />, label: 'Instagram' },
+    { href: 'https://github.com', icon: <Github className="h-5 w-5" />, label: 'Github' },
 ];
 
 export function Footer() {
@@ -46,10 +46,10 @@ export function Footer() {
             </p>
             <div className="mt-6">
                 <h4 className="font-semibold text-foreground mb-2">Stay in the loop</h4>
-                <div className="flex w-full max-w-sm items-center space-x-2">
+                <form className="flex w-full max-w-sm items-center space-x-2">
                     <Input type="email" placeholder="Email" className="bg-background"/>
                     <Button type="submit" variant="secondary" className="font-semibold text-secondary-foreground">Subscribe</Button>
-                </div>
+                </form>
             </div>
           </div>
           <div className="lg:col-span-8 grid grid-cols-2 md:grid-cols-3 gap-8">
@@ -95,7 +95,7 @@ export function Footer() {
           <p className="text-sm text-muted-foreground">&copy; {new Date().getFullYear()} ResQ Marketplace. All rights reserved.</p>
           <div className="flex items-center gap-4 mt-4 sm:mt-0">
             {socialLinks.map((social) => (
-                <Link key={social.label} href={social.href} className="text-muted-foreground hover:text-primary transition-colors">
+                <Link key={social.label} href={social.href} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors">
                     {social.icon}
                     <span className="sr-only">{social.label}</span>
                 </Link>

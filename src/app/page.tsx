@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -36,12 +37,16 @@ function HeroSection() {
           <p>Join thousands of food heroes in the Netherlands rescuing delicious, unsold food from local bakeries, cafes, and restaurants from going to waste.</p>
         </div>
         <div className="flex flex-col sm:flex-row justify-center items-center gap-4">
-          <Button size="lg" className="font-headline bg-primary hover:bg-primary/90 text-primary-foreground text-lg px-8 py-6 rounded-xl shadow-lg hover:scale-105 transition-transform duration-300">
-            Join 12,000+ Food Heroes
-          </Button>
-          <Button size="lg" variant="outline" className="font-headline bg-transparent border-2 border-white text-white hover:bg-white hover:text-black text-lg px-8 py-6 rounded-xl shadow-lg hover:scale-105 transition-transform duration-300">
-            Partner with Us
-          </Button>
+          <Link href="#download">
+            <Button size="lg" className="font-headline bg-primary hover:bg-primary/90 text-primary-foreground text-lg px-8 py-6 rounded-xl shadow-lg hover:scale-105 transition-transform duration-300">
+              Join 12,000+ Food Heroes
+            </Button>
+          </Link>
+          <Link href="#business">
+            <Button size="lg" variant="outline" className="font-headline bg-transparent border-2 border-white text-white hover:bg-white hover:text-black text-lg px-8 py-6 rounded-xl shadow-lg hover:scale-105 transition-transform duration-300">
+              Partner with Us
+            </Button>
+          </Link>
         </div>
         <div className="mt-12 text-center">
           <p className="font-semibold text-lg">
@@ -260,7 +265,7 @@ function DownloadApp() {
   const googlePlayImage = getImage('google-play');
   
   return (
-    <section className="py-20 sm:py-32 bg-accent text-accent-foreground">
+    <section id="download" className="py-20 sm:py-32 bg-accent text-accent-foreground">
       <div className="container mx-auto px-4">
         <div className="text-center">
           <h2 className="font-headline text-4xl md:text-5xl font-bold mb-4">Your Next Great Meal Awaits</h2>
@@ -279,7 +284,7 @@ function DownloadApp() {
                 <p className="font-semibold">Scan to Download</p>
             </div>
             <div className="flex flex-col gap-4">
-               <a href="#" className="hover:scale-105 transition-transform duration-300">
+               <a href="https://www.apple.com/app-store/" target="_blank" rel="noopener noreferrer" className="hover:scale-105 transition-transform duration-300">
                 <Image 
                   src={appStoreImage?.imageUrl || "https://picsum.photos/seed/6/180/60"}
                   alt={appStoreImage?.description || "Download on the App Store"}
@@ -288,7 +293,7 @@ function DownloadApp() {
                   data-ai-hint="App Store badge"
                 />
               </a>
-              <a href="#" className="hover:scale-105 transition-transform duration-300">
+              <a href="https://play.google.com/store" target="_blank" rel="noopener noreferrer" className="hover:scale-105 transition-transform duration-300">
                 <Image 
                   src={googlePlayImage?.imageUrl || "https://picsum.photos/seed/7/180/60"}
                   alt={googlePlayImage?.description || "Get it on Google Play"}
