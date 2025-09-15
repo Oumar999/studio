@@ -64,10 +64,9 @@ const initialMockListings: Listing[] = [
 ];
 
 
-export default function RestaurantPage({ params }: { params: { id: string } }) {
+export default function RestaurantPage({ params: { id } }: { params: { id: string } }) {
   const { user } = useAuth();
   const router = useRouter();
-  const { id } = params;
   
   const [listings, setListings] = useState(initialMockListings);
   const [listingToReserve, setListingToReserve] = useState<Listing | null>(null);
