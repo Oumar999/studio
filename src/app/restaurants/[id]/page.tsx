@@ -56,12 +56,13 @@ const mockListings: Listing[] = [
 export default function RestaurantPage({ params }: { params: { id: string } }) {
   const { user } = useAuth();
   const router = useRouter();
+  const { id } = params;
 
   useEffect(() => {
     if (!user) {
-      router.push(`/login?redirect=/restaurants/${params.id}`);
+      router.push(`/login?redirect=/restaurants/${id}`);
     }
-  }, [user, router, params.id]);
+  }, [user, router, id]);
   
   // In a real app, you would fetch business data and listings based on params.id
   const business = mockBusiness;
@@ -163,5 +164,3 @@ export default function RestaurantPage({ params }: { params: { id: string } }) {
     </div>
   );
 }
-
-    
